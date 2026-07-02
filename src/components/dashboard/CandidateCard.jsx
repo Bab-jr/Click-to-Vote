@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Trash2, Plus, ImageIcon, Pencil } from "lucide-react";
+import { getFileUrl } from "@/lib/fileUtils";
 
 export default function CandidateCard({
   candidate,
@@ -32,7 +33,7 @@ export default function CandidateCard({
       <div className="flex items-start gap-3">
         {candidate.photo ? (
           <img
-            src={candidate.photo}
+            src={getFileUrl(candidate.photo)}
             alt={candidate.name}
             className="w-12 h-12 rounded-full object-cover flex-shrink-0"
           />
