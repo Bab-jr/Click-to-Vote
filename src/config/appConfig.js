@@ -95,7 +95,49 @@ export const TRACKS = Array.from(
 
 // Sections are not yet confirmed — left empty until an official list is
 // provided. Add entries like { "Grade 11": ["A", "B", "C"] } when ready.
-export const SECTIONS_PER_TRACK = {};
+export const SECTIONS_PER_TRACK = {
+  "Grade 11": [
+    "Sapientia",
+    "Scientia",
+    "Excellentia",
+    "Constantia",
+    "Gravitas",
+    "Dignitas",
+    "Fidelitas",
+    "Integretas",
+    "Benevolentia",
+    "Competentia",
+    "Prudentia",
+    "Reverentia",
+    "Veritas",
+    "Caritas",
+    "Fides",
+    "Virtus",
+    "Justitia",
+    "Libertas",
+    "Humanitas",
+    "Pax"
+  ]
+
+  "Grade 12": [
+    "Mendel",
+    "Darwin",
+    "Franklin",
+    "Leeuwenhoek",
+    "Alcala",
+    "del Mundo",
+    "Benz",
+    "Curie",
+    "Faraday",
+    "Smeaton",
+    "Constantino",
+    "David",
+    "Kalaw",
+    "Caballero",
+    "Jocano",
+    "Enriquez"
+  ]
+};
 
 export function getTracksForGrade(grade) {
   return TRACKS_BY_GRADE[grade] || [];
