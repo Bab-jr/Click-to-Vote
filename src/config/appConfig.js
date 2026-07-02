@@ -19,11 +19,9 @@ export const APP_CONFIG = {
   mode: "live",
 
   // Base URL of the PHP API (the api.php file inside /server).
-  // Place the /server folder in your Xampp htdocs, e.g.
-  //   C:\xampp\htdocs\inhs-election\api.php
-  // then this URL becomes http://localhost/inhs-election/api.php
+  // Run cloudflared tunnel --url http://localhost:80 in cmd and copy the URL it gives you here. Make sure to include the /inhs-election/api.php part.
   api: {
-    baseUrl: "https://boxed-rim-moon-vbulletin.trycloudflare.com/inhs-election/api.php",
+    baseUrl: "https://butter-carriers-caroline-reunion.trycloudflare.com/inhs-election/api.php",
   },
 
   // Database credentials — must match the values in /server/config.php
