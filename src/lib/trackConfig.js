@@ -6,7 +6,7 @@ export {
   GRADES,
   TRACKS_BY_GRADE,
   TRACKS,
-  SECTIONS_PER_TRACK,
+  SECTIONS_PER_GRADE,
   getTracksForGrade,
-  getSectionsForTrack,
+  getSectionsForGrade,
 } from "@/config/appConfig";

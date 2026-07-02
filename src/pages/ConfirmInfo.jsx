@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
 import { Vote, GraduationCap, Layers, Loader2, CheckCircle2 } from "lucide-react";
-import { getTracksForGrade } from "@/lib/trackConfig";
+import { getTracksForGrade, getSectionsForGrade } from "@/lib/trackConfig";
 
 export default function ConfirmInfo() {
   const { user, updateVoterInfo } = useAuth();
@@ -23,6 +23,7 @@ export default function ConfirmInfo() {
   }
 
   const tracks = getTracksForGrade(user.grade);
+  const sections = getSectionsForGrade(user.grade);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,13 +32,13 @@ export default function ConfirmInfo() {
       setError("Please select your track.");
       return;
     }
-    if (!section.trim()) {
-      setError("Please enter your section.");
+    if (!section) {
+      setError("Please select your section.");
       return;
     }
     setLoading(true);
     try {
-      await updateVoterInfo(user.id, { track, section: section.trim() });
+      await updateVoterInfo(user.id, { track, section });
       window.location.href = "/vote";
     } catch (err) {
       setError(err.message || "Failed to save your information.");

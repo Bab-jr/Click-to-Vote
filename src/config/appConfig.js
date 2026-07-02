@@ -95,7 +95,7 @@ export const TRACKS = Array.from(
 
 // Sections are not yet confirmed — left empty until an official list is
 // provided. Add entries like { "Grade 11": ["A", "B", "C"] } when ready.
-export const SECTIONS_PER_TRACK = {
+export const SECTIONS_PER_GRADE = {
   "Grade 11": [
     "Sapientia",
     "Scientia",
@@ -143,6 +143,6 @@ export function getTracksForGrade(grade) {
   return TRACKS_BY_GRADE[grade] || [];
 }
 
-export function getSectionsForTrack(track) {
-  return SECTIONS_PER_TRACK[track] || [];
+export function getSectionsForGrade(grade) {
+  return SECTIONS_PER_GRADE[grade] || [];
 }
