@@ -117,7 +117,7 @@ export const SECTIONS_PER_TRACK = {
     "Libertas",
     "Humanitas",
     "Pax"
-  ]
+  ],
 
   "Grade 12": [
     "Mendel",
