@@ -23,7 +23,7 @@ export const APP_CONFIG = {
   //   C:\xampp\htdocs\inhs-election\api.php
   // then this URL becomes http://localhost/inhs-election/api.php
   api: {
-    baseUrl: "https://roll-preliminary-trance-involving.trycloudflare.com/inhs-election/api.php",
+    baseUrl: "http://localhost/inhs-election/api.php",
   },
 
   // Database credentials — must match the values in /server/config.php

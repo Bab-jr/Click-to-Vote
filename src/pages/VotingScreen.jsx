@@ -225,9 +225,7 @@ export default function VotingScreen() {
     );
   }
 
-  const gradeWindow = (election.grade_voting_windows || []).find(
-    (w) => w.grade === voterRecord.grade
-  );
+  const gradeWindow = (election.grade_voting_windows || []).find((w) => w.grade === voterRecord.grade);
 
   if (gradeWindow && gradeWindow.start_date_time && gradeWindow.end_date_time) {
     const startMs = new Date(gradeWindow.start_date_time).getTime();
