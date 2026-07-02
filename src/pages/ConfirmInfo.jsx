@@ -126,17 +126,33 @@ export default function ConfirmInfo() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-gray-700">
-                  Section
-                </label>
-                <input
-                  type="text"
-                  value={section}
-                  onChange={(e) => setSection(e.target.value)}
-                  placeholder="Enter your section"
-                  required
-                  className={inputClass}
-                />
+                <label className="text-sm font-medium text-gray-700">Section</label>
+                {sections.length > 0 ? (
+                  <select
+                    value={section}
+                    onChange={(e) => setSection(e.target.value)}
+                    required
+                    className={inputClass}
+                  >
+                    <option value="" disabled>
+                      Select your section
+                    </option>
+                    {sections.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    value={section}
+                    onChange={(e) => setSection(e.target.value)}
+                    placeholder="Enter your section"
+                    required
+                    className={inputClass}
+                  />
+                )}
               </div>
 
               <button
