@@ -225,7 +225,28 @@ export default function VotingScreen() {
     );
   }
 
-  const gradeWindow = (election.grade_voting_windows || []).find((w) => w.grade === voterRecord.grade);
+  console.log(
+    "grade_voting_windows:",
+    election.grade_voting_windows
+  );
+
+  console.log(
+    "type:",
+    typeof election.grade_voting_windows
+  );
+
+  console.log(
+    "isArray:",
+    Array.isArray(election.grade_voting_windows)
+  );
+
+  const gradeWindows = Array.isArray(election.grade_voting_windows)
+  ? election.grade_voting_windows
+  : [];
+
+  const gradeWindow = gradeWindows.find(
+    (w) => w.grade === voterRecord.grade
+  );
 
   if (gradeWindow && gradeWindow.start_date_time && gradeWindow.end_date_time) {
     const startMs = new Date(gradeWindow.start_date_time).getTime();
