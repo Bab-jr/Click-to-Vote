@@ -16,7 +16,7 @@ const sessionUser = () => {
   }
 };
 
-const request = async (path, opts = {}) => {
+export const request = async (path, opts = {}) => {
   // Safety net: never let a stalled backend hang the UI forever.
   // (Uploads use their own fetch and are not affected.)
   const timeoutMs = opts.timeout ?? 30000;

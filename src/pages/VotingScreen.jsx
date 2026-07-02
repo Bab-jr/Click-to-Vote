@@ -6,6 +6,7 @@ import { base44 } from "@/lib/localStore";
 import { logAction } from "@/lib/auditLog";
 import Modal from "@/components/dashboard/Modal";
 import { POSITION_LABELS, REGULAR_POSITIONS, TRACKS } from "@/lib/resultsHelper";
+import { request } from "@/lib/apiStore";
 import {
   ArrowLeft,
   Clock,
@@ -290,17 +291,15 @@ export default function VotingScreen() {
     setSubmitError("");
     try {
       const candidate_ids = Object.values(selected).filter(Boolean);
-      await base44.entities.Vote.create({
-        voter_id: voterRecord.id,
-        election_id: electionId,
-        candidate_ids,
+      await request("?e=vote&a=submit", {
+        method: "POST",
+        body: JSON.stringify({
+          voter_id: voterRecord.id,
+          election_id: electionId,
+          candidate_ids,
+          user_name: user.name,
+        }),
       });
-      await base44.entities.Voter.update(voterRecord.id, { has_voted: true });
-      await logAction(
-        "VOTE_CAST",
-        `Voter ${user.name} cast their ballot`,
-        electionId
-      );
       setShowConfirm(false);
       setShowSuccess(true);
     } catch (err) {
