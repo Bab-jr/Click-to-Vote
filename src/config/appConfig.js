@@ -21,7 +21,7 @@ export const APP_CONFIG = {
   // Base URL of the PHP API (the api.php file inside /server).
   // Run cloudflared tunnel --url http://localhost:80 in cmd and copy the URL it gives you here. Make sure to include the /inhs-election/api.php part.
   api: {
-    baseUrl: "https://lunch-blocking-sims-rights.trycloudflare.com/inhs-election/api.php",
+    baseUrl: "https://providers-stock-laura-hawaiian.trycloudflare.com/inhs-election/api.php",
   },
 
   // Database credentials — must match the values in /server/config.php
