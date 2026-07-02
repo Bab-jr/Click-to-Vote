@@ -225,24 +225,17 @@ export default function VotingScreen() {
     );
   }
 
-  console.log(
-    "grade_voting_windows:",
-    election.grade_voting_windows
-  );
+  let gradeWindows = [];
 
-  console.log(
-    "type:",
-    typeof election.grade_voting_windows
-  );
-
-  console.log(
-    "isArray:",
-    Array.isArray(election.grade_voting_windows)
-  );
-
-  const gradeWindows = Array.isArray(election.grade_voting_windows)
-  ? election.grade_voting_windows
-  : [];
+  if (Array.isArray(election.grade_voting_windows)) {
+    gradeWindows = election.grade_voting_windows;
+  } else if (typeof election.grade_voting_windows === "string") {
+    try {
+      gradeWindows = JSON.parse(election.grade_voting_windows);
+    } catch {
+      gradeWindows = [];
+    }
+  }
 
   const gradeWindow = gradeWindows.find(
     (w) => w.grade === voterRecord.grade
