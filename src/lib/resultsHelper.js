@@ -63,8 +63,9 @@ export async function computeElectionResults(electionId) {
         });
       });
   } catch (err) {
-    console.error("computeElectionResults failed:", err);
-    throw err;
+    console.error("Election results error:", err);
+    console.error(err.stack);
+    setResults(null);
   }
 
   const partyName = (partyId) =>
