@@ -42,7 +42,7 @@ export const APP_CONFIG = {
     port: 587,
     username: "ictd@iloilonhs.edu.ph",
     password: "atwm kvir hgeu qjbz",
-    fromName: "INHS Election System",
+    fromName: "Election System",
     fromEmail: "ictd@iloilonhs.edu.ph",
   },
 
