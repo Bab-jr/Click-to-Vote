@@ -1,4 +1,4 @@
-import { base44 } from "@/api/base44Client";
+import { base44 } from "@/lib/localStore";
 
 export const POSITION_LABELS = {
   governor: "Governor",
@@ -35,141 +35,108 @@ export const TRACKS = [
 ];
 
 export async function computeElectionResults(electionId) {
-  try {
-    const voters = await base44.entities.Voter.filter({
-        election_id: electionId,
-      });
-      console.log("voters", voters);
+  const [voters, candidates, votes, parties] = await Promise.all([
+    base44.entities.Voter.filter({ election_id: electionId }),
+    base44.entities.Candidate.filter({ election_id: electionId }),
+    base44.entities.Vote.filter({ election_id: electionId }),
+    base44.entities.Party.filter({ election_id: electionId }),
+  ]);
 
-      const candidates = await base44.entities.Candidate.filter({
-        election_id: electionId,
-      });
-      console.log("candidates", candidates);
-
-      const votes = await base44.entities.Vote.filter({
-        election_id: electionId,
-      });
-      console.log("votes", votes);
-
-      const parties = await base44.entities.Party.filter({
-        election_id: electionId,
-      });
-      console.log("parties", parties);
-
-      const voteCounts = {};
-      votes.forEach((w) => {
-      let candidateIds = w.candidate_ids || [];
-
-      // MySQL stores arrays as JSON strings
-      if (typeof candidateIds === "string") {
-        try {
-          candidateIds = JSON.parse(candidateIds);
-        } catch {
-          candidateIds = [];
-        }
-      }
-
-      if (!Array.isArray(candidateIds)) {
-        candidateIds = [];
-      }
-
-      candidateIds.forEach((cid) => {
-        voteCounts[cid] = (voteCounts[cid] || 0) + 1;
-      });
+  const voteCounts = {};
+  votes.forEach((v) => {
+    (v.candidate_ids || []).forEach((cid) => {
+      voteCounts[cid] = (voteCounts[cid] || 0) + 1;
     });
+  });
 
-    const partyName = (partyId) =>
-      parties.find((p) => p.id === partyId)?.name || "Independent";
+  const partyName = (partyId) =>
+    parties.find((p) => p.id === partyId)?.name || "Independent";
 
-    const regularWinners = REGULAR_POSITIONS.map((pos) => {
-      const posCandidates = candidates.filter((c) => c.position === pos);
-      let maxVotes = 0;
-      let winner = null;
-      posCandidates.forEach((c) => {
-        const count = voteCounts[c.id] || 0;
-        if (count > maxVotes) {
-          maxVotes = count;
-          winner = c;
-        }
-      });
-      return {
-        position: pos,
-        label: POSITION_LABELS[pos],
-        winner,
-        votes: maxVotes,
-        candidates: posCandidates,
-      };
-    });
-
-    const boardWinners = TRACKS.map((track) => {
-      const trackCandidates = candidates.filter(
-        (c) => c.position === "board_member" && c.track === track
-      );
-      let maxVotes = 0;
-      let winner = null;
-      trackCandidates.forEach((c) => {
-        const count = voteCounts[c.id] || 0;
-        if (count > maxVotes) {
-          maxVotes = count;
-          winner = c;
-        }
-      });
-      return { track, winner, votes: maxVotes, candidates: trackCandidates };
-    }).filter((b) => b.candidates.length > 0);
-
-    const totalVoters = voters.length;
-    const votedCount = voters.filter((v) => v.has_voted).length;
-
-    const byTrack = {};
-    const byGrade = {};
-    const bySection = {};
-    const byTrackSection = {};
-    voters.forEach((v) => {
-      const t = v.track || "Unknown";
-      const g = v.grade || "Unknown";
-      const s = v.section || "Unknown";
-      if (!byTrack[t]) byTrack[t] = { total: 0, voted: 0 };
-      if (!byGrade[g]) byGrade[g] = { total: 0, voted: 0 };
-      if (!bySection[s]) bySection[s] = { total: 0, voted: 0 };
-      byTrack[t].total++;
-      byGrade[g].total++;
-      bySection[s].total++;
-      const tsKey = `${t}|${s}`;
-      if (!byTrackSection[tsKey])
-        byTrackSection[tsKey] = { track: t, section: s, total: 0, voted: 0 };
-      byTrackSection[tsKey].total++;
-      if (v.has_voted) {
-        byTrack[t].voted++;
-        byGrade[g].voted++;
-        bySection[s].voted++;
-        byTrackSection[tsKey].voted++;
+  const regularWinners = REGULAR_POSITIONS.map((pos) => {
+    const posCandidates = candidates.filter((c) => c.position === pos);
+    let maxVotes = 0;
+    let winner = null;
+    posCandidates.forEach((c) => {
+      const count = voteCounts[c.id] || 0;
+      if (count > maxVotes) {
+        maxVotes = count;
+        winner = c;
       }
     });
-
     return {
-      voters,
-      candidates,
-      votes,
-      parties,
-      voteCounts,
-      regularWinners,
-      boardWinners,
-      stats: {
-        totalVoters,
-        votedCount,
-        notVotedCount: totalVoters - votedCount,
-        byTrack,
-        byGrade,
-        bySection,
-        byTrackSection,
-      },
-      partyName,
+      position: pos,
+      label: POSITION_LABELS[pos],
+      winner,
+      votes: maxVotes,
+      candidates: posCandidates,
     };
-  } catch (err) {
-    console.error("Election results error:", err);
-    console.error(err.stack);
-    setResults(null);
-  }
+  });
+
+  const boardWinners = TRACKS.map((track) => {
+    const trackCandidates = candidates.filter(
+      (c) => c.position === "board_member" && c.track === track
+    );
+    let maxVotes = 0;
+    let winner = null;
+    trackCandidates.forEach((c) => {
+      const count = voteCounts[c.id] || 0;
+      if (count > maxVotes) {
+        maxVotes = count;
+        winner = c;
+      }
+    });
+    return { track, winner, votes: maxVotes, candidates: trackCandidates };
+  }).filter((b) => b.candidates.length > 0);
+
+  const totalVoters = voters.length;
+  const votedCount = voters.filter((v) => v.has_voted).length;
+
+  const byTrack = {};
+  const byGrade = {};
+  const bySection = {};
+  const byTrackSection = {};
+  voters.forEach((v) => {
+    const t = v.track || "Unknown";
+    const g = v.grade || "Unknown";
+    const s = v.section || "Unknown";
+    if (!byTrack[t]) byTrack[t] = { total: 0, voted: 0 };
+    if (!byGrade[g]) byGrade[g] = { total: 0, voted: 0 };
+    if (!bySection[s]) bySection[s] = { total: 0, voted: 0 };
+    byTrack[t].total++;
+    byGrade[g].total++;
+    bySection[s].total++;
+    const tsKey = `${t}|${s}`;
+    if (!byTrackSection[tsKey])
+      byTrackSection[tsKey] = { track: t, section: s, total: 0, voted: 0 };
+    byTrackSection[tsKey].total++;
+    if (v.has_voted) {
+      byTrack[t].voted++;
+      byGrade[g].voted++;
+      bySection[s].voted++;
+      byTrackSection[tsKey].voted++;
+    }
+  });
+
+  return {
+    voters,
+    candidates,
+    votes,
+    parties,
+    voteCounts,
+    regularWinners,
+    boardWinners,
+    stats: {
+      totalVoters,
+      votedCount,
+      notVotedCount: totalVoters - votedCount,
+      byTrack,
+      byGrade,
+      bySection,
+      byTrackSection,
+    },
+    partyName,
+  };
+}
 
 export function downloadResults(election, results) {
   let text = "";
