@@ -62,6 +62,10 @@ export async function computeElectionResults(electionId) {
     });
   });
 
+  console.log(votes[0]);
+  console.log(typeof votes[0].candidate_ids);
+  console.log(votes[0].candidate_ids);
+
   const partyName = (partyId) =>
     parties.find((p) => p.id === partyId)?.name || "Independent";
 
