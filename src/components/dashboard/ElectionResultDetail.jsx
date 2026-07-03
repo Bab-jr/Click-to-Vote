@@ -16,7 +16,8 @@ export default function ElectionResultDetail({ election }) {
       try {
         const data = await computeElectionResults(election.id);
         setResults(data);
-      } catch {
+      } catch (err) {
+        console.error("Election results error:", err);
         setResults(null);
       } finally {
         setLoading(false);
