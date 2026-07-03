@@ -114,7 +114,11 @@ export const SECTIONS_PER_GRADE = {
     "Justitia",
     "Libertas",
     "Humanitas",
-    "Pax"
+    "Pax",
+    "Probitas",
+    "Progressus",
+    "Clemecia",
+    "Gratia"
   ],
 
   "Grade 12": [
