@@ -1,4 +1,4 @@
-import { base44 } from "@/lib/localStore";
+import { base44 } from "@/api/base44Client";
 
 export const POSITION_LABELS = {
   governor: "Governor",
