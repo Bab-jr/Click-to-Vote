@@ -57,11 +57,26 @@ export async function computeElectionResults(electionId) {
       console.log("parties", parties);
 
       const voteCounts = {};
-      votes.forEach((v) => {
-        (v.candidate_ids || []).forEach((cid) => {
-          voteCounts[cid] = (voteCounts[cid] || 0) + 1;
-        });
+      votes.forEach((w) => {
+      let candidateIds = w.candidate_ids || [];
+
+      // MySQL stores arrays as JSON strings
+      if (typeof candidateIds === "string") {
+        try {
+          candidateIds = JSON.parse(candidateIds);
+        } catch {
+          candidateIds = [];
+        }
+      }
+
+      if (!Array.isArray(candidateIds)) {
+        candidateIds = [];
+      }
+
+      candidateIds.forEach((cid) => {
+        voteCounts[cid] = (voteCounts[cid] || 0) + 1;
       });
+    });
   } catch (err) {
     console.error("Election results error:", err);
     console.error(err.stack);
