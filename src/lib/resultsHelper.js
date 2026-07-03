@@ -35,7 +35,8 @@ export const TRACKS = [
 ];
 
 export async function computeElectionResults(electionId) {
-  const [voters, candidates, votes, parties] = await Promise.all([
+  const [voters, candidates, votes, parties] =
+  await Promise.all([
     base44.entities.Voter.filter({ election_id: electionId }),
     base44.entities.Candidate.filter({ election_id: electionId }),
     base44.entities.Vote.filter({ election_id: electionId }),
@@ -43,8 +44,34 @@ export async function computeElectionResults(electionId) {
   ]);
 
   const voteCounts = {};
+
   votes.forEach((v) => {
-    (v.candidate_ids || []).forEach((cid) => {
+    let candidateIds = v.candidate_ids;
+
+    if (!candidateIds) {
+      candidateIds = [];
+    }
+    else if (typeof candidateIds === "string") {
+      try {
+        candidateIds = JSON.parse(candidateIds);
+      } catch {
+        candidateIds = candidateIds
+          .split(",")
+          .map((id) => id.trim())
+          .filter(Boolean);
+      }
+    }
+    else if (
+      typeof candidateIds === "object" &&
+      !Array.isArray(candidateIds)
+    ) {
+      candidateIds = Object.values(candidateIds);
+    }
+    else if (!Array.isArray(candidateIds)) {
+      candidateIds = [candidateIds];
+    }
+
+    candidateIds.forEach((cid) => {
       voteCounts[cid] = (voteCounts[cid] || 0) + 1;
     });
   });
