@@ -39,10 +39,10 @@ export const APP_CONFIG = {
   // at https://myaccount.google.com/apppasswords
   smtp: {
     host: "smtp.gmail.com",
-    port: 587,
+    port: 465,
     username: "ictd@iloilonhs.edu.ph",
     password: "atwm kvir hgeu qjbz",
-    fromName: "Election System",
+    fromName: "INHS Election System",
     fromEmail: "ictd@iloilonhs.edu.ph",
   },
 
