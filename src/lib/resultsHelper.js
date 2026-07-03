@@ -77,100 +77,99 @@ export async function computeElectionResults(electionId) {
         voteCounts[cid] = (voteCounts[cid] || 0) + 1;
       });
     });
+
+    const partyName = (partyId) =>
+      parties.find((p) => p.id === partyId)?.name || "Independent";
+
+    const regularWinners = REGULAR_POSITIONS.map((pos) => {
+      const posCandidates = candidates.filter((c) => c.position === pos);
+      let maxVotes = 0;
+      let winner = null;
+      posCandidates.forEach((c) => {
+        const count = voteCounts[c.id] || 0;
+        if (count > maxVotes) {
+          maxVotes = count;
+          winner = c;
+        }
+      });
+      return {
+        position: pos,
+        label: POSITION_LABELS[pos],
+        winner,
+        votes: maxVotes,
+        candidates: posCandidates,
+      };
+    });
+
+    const boardWinners = TRACKS.map((track) => {
+      const trackCandidates = candidates.filter(
+        (c) => c.position === "board_member" && c.track === track
+      );
+      let maxVotes = 0;
+      let winner = null;
+      trackCandidates.forEach((c) => {
+        const count = voteCounts[c.id] || 0;
+        if (count > maxVotes) {
+          maxVotes = count;
+          winner = c;
+        }
+      });
+      return { track, winner, votes: maxVotes, candidates: trackCandidates };
+    }).filter((b) => b.candidates.length > 0);
+
+    const totalVoters = voters.length;
+    const votedCount = voters.filter((v) => v.has_voted).length;
+
+    const byTrack = {};
+    const byGrade = {};
+    const bySection = {};
+    const byTrackSection = {};
+    voters.forEach((v) => {
+      const t = v.track || "Unknown";
+      const g = v.grade || "Unknown";
+      const s = v.section || "Unknown";
+      if (!byTrack[t]) byTrack[t] = { total: 0, voted: 0 };
+      if (!byGrade[g]) byGrade[g] = { total: 0, voted: 0 };
+      if (!bySection[s]) bySection[s] = { total: 0, voted: 0 };
+      byTrack[t].total++;
+      byGrade[g].total++;
+      bySection[s].total++;
+      const tsKey = `${t}|${s}`;
+      if (!byTrackSection[tsKey])
+        byTrackSection[tsKey] = { track: t, section: s, total: 0, voted: 0 };
+      byTrackSection[tsKey].total++;
+      if (v.has_voted) {
+        byTrack[t].voted++;
+        byGrade[g].voted++;
+        bySection[s].voted++;
+        byTrackSection[tsKey].voted++;
+      }
+    });
+
+    return {
+      voters,
+      candidates,
+      votes,
+      parties,
+      voteCounts,
+      regularWinners,
+      boardWinners,
+      stats: {
+        totalVoters,
+        votedCount,
+        notVotedCount: totalVoters - votedCount,
+        byTrack,
+        byGrade,
+        bySection,
+        byTrackSection,
+      },
+      partyName,
+    };
   } catch (err) {
     console.error("Election results error:", err);
     console.error(err.stack);
     setResults(null);
   }
-
-  const partyName = (partyId) =>
-    parties.find((p) => p.id === partyId)?.name || "Independent";
-
-  const regularWinners = REGULAR_POSITIONS.map((pos) => {
-    const posCandidates = candidates.filter((c) => c.position === pos);
-    let maxVotes = 0;
-    let winner = null;
-    posCandidates.forEach((c) => {
-      const count = voteCounts[c.id] || 0;
-      if (count > maxVotes) {
-        maxVotes = count;
-        winner = c;
-      }
-    });
-    return {
-      position: pos,
-      label: POSITION_LABELS[pos],
-      winner,
-      votes: maxVotes,
-      candidates: posCandidates,
-    };
-  });
-
-  const boardWinners = TRACKS.map((track) => {
-    const trackCandidates = candidates.filter(
-      (c) => c.position === "board_member" && c.track === track
-    );
-    let maxVotes = 0;
-    let winner = null;
-    trackCandidates.forEach((c) => {
-      const count = voteCounts[c.id] || 0;
-      if (count > maxVotes) {
-        maxVotes = count;
-        winner = c;
-      }
-    });
-    return { track, winner, votes: maxVotes, candidates: trackCandidates };
-  }).filter((b) => b.candidates.length > 0);
-
-  const totalVoters = voters.length;
-  const votedCount = voters.filter((v) => v.has_voted).length;
-
-  const byTrack = {};
-  const byGrade = {};
-  const bySection = {};
-  const byTrackSection = {};
-  voters.forEach((v) => {
-    const t = v.track || "Unknown";
-    const g = v.grade || "Unknown";
-    const s = v.section || "Unknown";
-    if (!byTrack[t]) byTrack[t] = { total: 0, voted: 0 };
-    if (!byGrade[g]) byGrade[g] = { total: 0, voted: 0 };
-    if (!bySection[s]) bySection[s] = { total: 0, voted: 0 };
-    byTrack[t].total++;
-    byGrade[g].total++;
-    bySection[s].total++;
-    const tsKey = `${t}|${s}`;
-    if (!byTrackSection[tsKey])
-      byTrackSection[tsKey] = { track: t, section: s, total: 0, voted: 0 };
-    byTrackSection[tsKey].total++;
-    if (v.has_voted) {
-      byTrack[t].voted++;
-      byGrade[g].voted++;
-      bySection[s].voted++;
-      byTrackSection[tsKey].voted++;
-    }
-  });
-
-  return {
-    voters,
-    candidates,
-    votes,
-    parties,
-    voteCounts,
-    regularWinners,
-    boardWinners,
-    stats: {
-      totalVoters,
-      votedCount,
-      notVotedCount: totalVoters - votedCount,
-      byTrack,
-      byGrade,
-      bySection,
-      byTrackSection,
-    },
-    partyName,
-  };
-}
 
 export function downloadResults(election, results) {
   let text = "";

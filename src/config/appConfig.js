@@ -142,7 +142,16 @@ export const SECTIONS_PER_GRADE = {
     "Kalaw",
     "Caballero",
     "Jocano",
-    "Enriquez"
+    "Enriquez",
+    "Gates",
+    "Page",
+    "Lovelace",
+    "Sison",
+    "Tayag",
+    "HS",
+    "JG",
+    "MVP",
+    "Injap"
   ]
 };
 
