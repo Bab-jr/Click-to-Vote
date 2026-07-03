@@ -35,7 +35,8 @@ export const TRACKS = [
 ];
 
 export async function computeElectionResults(electionId) {
-  const voters = await base44.entities.Voter.filter({
+   try {
+    const voters = await base44.entities.Voter.filter({
     election_id: electionId,
   });
   console.log("voters", voters);
@@ -66,6 +67,11 @@ export async function computeElectionResults(electionId) {
   console.log(typeof votes[0].candidate_ids);
   console.log(votes[0].candidate_ids);
 
+  } catch (err) {
+    console.error("computeElectionResults failed:", err);
+    throw err;
+  }
+}
   const partyName = (partyId) =>
     parties.find((p) => p.id === partyId)?.name || "Independent";
 
