@@ -35,43 +35,38 @@ export const TRACKS = [
 ];
 
 export async function computeElectionResults(electionId) {
-   try {
+  try {
     const voters = await base44.entities.Voter.filter({
-    election_id: electionId,
-  });
-  console.log("voters", voters);
+        election_id: electionId,
+      });
+      console.log("voters", voters);
 
-  const candidates = await base44.entities.Candidate.filter({
-    election_id: electionId,
-  });
-  console.log("candidates", candidates);
+      const candidates = await base44.entities.Candidate.filter({
+        election_id: electionId,
+      });
+      console.log("candidates", candidates);
 
-  const votes = await base44.entities.Vote.filter({
-    election_id: electionId,
-  });
-  console.log("votes", votes);
+      const votes = await base44.entities.Vote.filter({
+        election_id: electionId,
+      });
+      console.log("votes", votes);
 
-  const parties = await base44.entities.Party.filter({
-    election_id: electionId,
-  });
-  console.log("parties", parties);
+      const parties = await base44.entities.Party.filter({
+        election_id: electionId,
+      });
+      console.log("parties", parties);
 
-  const voteCounts = {};
-  votes.forEach((v) => {
-    (v.candidate_ids || []).forEach((cid) => {
-      voteCounts[cid] = (voteCounts[cid] || 0) + 1;
-    });
-  });
-
-  console.log(votes[0]);
-  console.log(typeof votes[0].candidate_ids);
-  console.log(votes[0].candidate_ids);
-
+      const voteCounts = {};
+      votes.forEach((v) => {
+        (v.candidate_ids || []).forEach((cid) => {
+          voteCounts[cid] = (voteCounts[cid] || 0) + 1;
+        });
+      });
   } catch (err) {
     console.error("computeElectionResults failed:", err);
     throw err;
   }
-}
+
   const partyName = (partyId) =>
     parties.find((p) => p.id === partyId)?.name || "Independent";
 
