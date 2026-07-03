@@ -21,7 +21,7 @@ export const APP_CONFIG = {
   // Base URL of the PHP API (the api.php file inside /server).
   // Run cloudflared tunnel --url http://localhost:80 in cmd and copy the URL it gives you here. Make sure to include the /inhs-election/api.php part.
   api: {
-    baseUrl: "https://taste-vista-brisbane-daniel.trycloudflare.com/inhs-election/api.php",
+    baseUrl: "https://selected-build-certificates-franchise.trycloudflare.com/inhs-election/api.php",
   },
 
   // Database credentials — must match the values in /server/config.php
@@ -39,7 +39,7 @@ export const APP_CONFIG = {
   // at https://myaccount.google.com/apppasswords
   smtp: {
     host: "smtp.gmail.com",
-    port: 465,
+    port: 587,
     username: "ictd@iloilonhs.edu.ph",
     password: "atwm kvir hgeu qjbz",
     fromName: "INHS Election System",
