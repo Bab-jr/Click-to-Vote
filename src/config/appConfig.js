@@ -41,7 +41,7 @@ export const APP_CONFIG = {
     host: "smtp.gmail.com",
     port: 587,
     username: "ictd@iloilonhs.edu.ph",
-    password: "14344Lord",
+    password: "atwm kvir hgeu qjbz",
     fromName: "INHS Election System",
     fromEmail: "ictd@iloilonhs.edu.ph",
   },
