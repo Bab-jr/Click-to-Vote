@@ -102,14 +102,14 @@ export async function computeElectionResults(electionId) {
     const partyName = (partyId) =>
       parties.find((p) => p.id === partyId)?.name || "Independent";
   
-    const buildCandidateResults = (posCandidates, eligibleVoters) =>
+    const buildCandidateResults = (posCandidates, votedForPosition) =>
       posCandidates
         .map((c) => ({
           candidate: c,
           votes: voteCounts[c.id] || 0,
           percentage:
-            eligibleVoters > 0
-              ? ((voteCounts[c.id] || 0) / eligibleVoters) * 100
+            votedForPosition > 0
+              ? ((voteCounts[c.id] || 0) / votedForPosition) * 100
               : 0,
         }))
         .sort((a, b) => b.votes - a.votes);
@@ -120,7 +120,7 @@ export async function computeElectionResults(electionId) {
       const votedForPosition = positionVoters[pos]?.size || 0;
       const candidateResults = buildCandidateResults(
         posCandidates,
-        eligibleVoters
+        votedForPosition
       );
       const top = candidateResults[0];
       const winner = top && top.votes > 0 ? top.candidate : null;
