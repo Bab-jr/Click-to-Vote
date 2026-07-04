@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { format } from "date-fns";
 import { computeElectionResults, downloadResults } from "@/lib/resultsHelper";
-import WinnerCard from "@/components/dashboard/WinnerCard";
+import PositionResultCard from "@/components/dashboard/PositionResultCard";
 import StatCard from "@/components/dashboard/StatCard";
-import { Loader2, Download, Users, CheckCircle2, XCircle } from "lucide-react";
+import { Loader2, Download } from "lucide-react";
 
 export default function ElectionResultDetail({ election }) {
   const [results, setResults] = useState(null);
@@ -16,8 +15,7 @@ export default function ElectionResultDetail({ election }) {
       try {
         const data = await computeElectionResults(election.id);
         setResults(data);
-      } catch (err) {
-        console.error("Election results error:", err);
+      } catch {
         setResults(null);
       } finally {
         setLoading(false);
@@ -153,39 +151,36 @@ export default function ElectionResultDetail({ election }) {
         </div>
       </div>
 
-      {/* Winning Candidates */}
+      {/* Position-by-position results */}
       <div>
         <h4 className="text-sm font-bold text-gray-900 mb-3">
-          Winning Candidates
+          Position Results
         </h4>
         <div className="space-y-4">
           {regularWinners.map((w) => (
-            <div key={w.position}>
-              <p className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                {w.label}
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                <WinnerCard
-                  candidate={w.winner}
-                  partyName={w.winner ? partyName(w.winner.party_id) : ""}
-                  votes={w.votes}
-                />
-              </div>
-            </div>
+            <PositionResultCard
+              key={w.position}
+              label={w.label}
+              candidateResults={w.candidateResults}
+              winner={w.winner}
+              eligibleVoters={w.eligibleVoters}
+              votedForPosition={w.votedForPosition}
+              abstained={w.abstained}
+              partyName={partyName}
+            />
           ))}
           {boardWinners.map((b) => (
-            <div key={`board_${b.track}`}>
-              <p className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                Board Member — {b.track} Track
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                <WinnerCard
-                  candidate={b.winner}
-                  partyName={b.winner ? partyName(b.winner.party_id) : ""}
-                  votes={b.votes}
-                />
-              </div>
-            </div>
+            <PositionResultCard
+              key={`board_${b.grade}_${b.track}`}
+              label="Board Member"
+              sublabel={`${b.grade} · ${b.track}`}
+              candidateResults={b.candidateResults}
+              winner={b.winner}
+              eligibleVoters={b.eligibleVoters}
+              votedForPosition={b.votedForPosition}
+              abstained={b.abstained}
+              partyName={partyName}
+            />
           ))}
         </div>
       </div>

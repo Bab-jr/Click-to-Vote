@@ -4,6 +4,7 @@ import { Loader2, UploadCloud, FileText } from "lucide-react";
 import Modal from "@/components/dashboard/Modal";
 import { base44 } from "@/lib/localStore";
 import { logAction } from "@/lib/auditLog";
+import { GRADES } from "@/lib/trackConfig";
 
 function parseCSV(text) {
   const lines = text.split(/\r?\n/).filter((l) => l.trim());
@@ -56,7 +57,9 @@ export default function ImportVotersModal({
           password: "",
           password_changed: false,
           cluster: r.cluster || "",
-          grade: r.grade || "",
+          grade: GRADES.includes((r.grade || "").trim())
+            ? r.grade.trim()
+            : "",
           track: "",
           section: "",
           election_id: electionId,

@@ -21,7 +21,7 @@ import ManageElectionModal from "@/components/modals/ManageElectionModal";
 import { base44 } from "@/lib/localStore";
 import { logAction } from "@/lib/auditLog";
 import Dropdown from "@/components/dashboard/Dropdown";
-import { TRACKS } from "@/lib/trackConfig";
+import { TRACKS, GRADES } from "@/lib/trackConfig";
 import { Vote, Plus, Square, Settings } from "lucide-react";
 
 export default function ElectionDashboard() {
@@ -63,7 +63,7 @@ export default function ElectionDashboard() {
         const trackMap = {};
         const sectionMap = {};
         voters.forEach((v) => {
-          const g = v.grade || "Unknown";
+          const g = GRADES.includes(v.grade) ? v.grade : "Unknown";
           if (!gradeMap[g]) gradeMap[g] = { voted: 0, notVoted: 0 };
           if (v.has_voted) gradeMap[g].voted++;
           else gradeMap[g].notVoted++;
